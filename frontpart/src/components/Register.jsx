@@ -5,7 +5,7 @@ const Register = () => {
     async function getData(signal) {
         try {
             const response = await axios.get('/')
-            const data  = response.data
+            const data = response.data
             console.log(data);
         }
         catch (err) {
@@ -19,13 +19,38 @@ const Register = () => {
                 console.log('Login Failed');
             }
         }
+    }
+    async function getAPIData(signal) {
+        try {
+            const response = await axios.get(
+                "/2",
+                // 'https://jsonplaceholder.typicode.com/posts/',
+                {
+                    signal: signal
+                })
+            const data = response.data
+            console.log(data)
+        } catch (error) {
+            console.log(error?.response)
+            console.log(error?.response?.status)
+        }
+    }
 
+    async function fetchAll(signal) {
+        try {
+
+            const [users, posts] = await Promise.all([getData(signal), getAPIData(signal)])
+        } catch (error) {
+            console.log(error)
+
+        }
 
     }
     useEffect(() => {
         const controller = new AbortController();
 
-        getData(controller.signal)
+        // getData(controller.signal)
+        fetchAll(controller.signal)
 
         return () => {
             controller.abort();
